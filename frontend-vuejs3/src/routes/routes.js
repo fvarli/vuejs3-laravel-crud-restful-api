@@ -1,5 +1,6 @@
 import ContactList from '../components/ContactList';
 import AddContact from '../components/AddContact';
+import EditContact from '../components/EditContact';
 import {createRouter, createWebHistory} from 'vue-router';
 
 const routes = [
@@ -10,8 +11,13 @@ const routes = [
     },
     {
         name: 'AddContact',
-        path: '/add_contacts',
+        path: '/add_contact',
         component: AddContact
+    },
+    {
+        name: 'EditContact',
+        path: '/contact/edit/:id?',
+        component: EditContact
     }
 ]
 

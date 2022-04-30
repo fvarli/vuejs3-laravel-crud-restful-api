@@ -17,6 +17,13 @@ class ContactController extends Controller
         ]);
     }
 
+    public function getContact($id)
+    {
+        $contact = Contact::find($id);
+        return response()->json($contact);
+
+    }
+
     public function saveContact(Request  $request)
     {
         $contact = new Contact();
@@ -47,5 +54,20 @@ class ContactController extends Controller
             ]);
         }
 
+    }
+
+    public function updateContact($id, Request $request)
+    {
+        $contact = Contact::where('id', $id)->first();
+
+        $contact->name = $request->name;
+        $contact->email = $request->email;
+        $contact->designation = $request->designation;
+        $contact->contact_no = $request->contact_no;
+        $contact->save();
+        return response()->json([
+            'message' => 'Contact successfully updated',
+            'code' => 200
+        ]);
     }
 }

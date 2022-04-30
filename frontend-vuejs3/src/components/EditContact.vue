@@ -11,7 +11,7 @@
                     </ul>
                 </div>
 
-                <form @submit.prevent="saveContact" novalidate>
+                <form @submit.prevent="updateContact" novalidate>
                     <fieldset>
                         <div class="form-group">
                             <label class="form-label mt-4">Name</label>
@@ -42,9 +42,10 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
+
 export default  {
-    name: 'AddContact',
+    name: 'EditContact',
     data() {
         return {
             contact: {},
@@ -55,9 +56,18 @@ export default  {
             errors: []
         }
     },
-
+    created() {
+        this.getContactById();
+    },
     methods: {
-        async saveContact() {
+        async getContactById() {
+            let url = `http://127.0.0.1:8000/api/get_contact/${this.$route.params.id}`;
+            await axios.get(url).then(response => {
+                console.log(response);
+                this.contact = response.data;
+            })
+        },
+        async updateContact() {
             this.errors = [];
             if(!this.contact.name) {
                 this.errors.push("Name is required")
@@ -78,14 +88,13 @@ export default  {
                 formData.append('email', this.contact.email);
                 formData.append('designation', this.contact.designation);
                 formData.append('contact_no', this.contact.contact_no);
-                let url = 'http://127.0.0.1:8000/api/save_contact';
-                await axios.post(url, formData).then((response) => {
-                    console.log(response.data);
+                let url = `http://127.0.0.1:8000/api/update_contact/${this.$route.params.id}`;
+                await axios.post(url, formData.entries()).then((response) => {
+                    /*console.log(this.errors.length);
+                    for (let pair of formData.entries()) {
+                        console.log(pair[0]+ ', ' + pair[1]);
+                    }*/
                     if (response.status === 200) {
-                        this.contact.name = '';
-                        this.contact.email = '';
-                        this.contact.designation = '';
-                        this.contact.contact_no = '';
                         console.log('success: ', response.data.message)
                     } else {
                         console.log('error: ', response.data.message)
@@ -98,7 +107,7 @@ export default  {
         }
     },
     mounted() {
-        console.log('Add Contact Component mounted')
+        console.log('Edit Contact Component mounted')
     }
 }
 </script>

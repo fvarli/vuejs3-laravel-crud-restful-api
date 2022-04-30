@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container table-responsive">
         <table class="table table-hover">
             <thead>
             <tr>
@@ -18,7 +18,8 @@
                 <th scope="row">{{ contact.email }}</th>
                 <th scope="row">{{ contact.designation }}</th>
                 <th scope="row">{{ contact.contact_no }}</th>
-                <th scope="row"><button class="btn btn-danger btn-sm" @click.prevent="deleteContact(contact.id)">Delete</button></th>
+                <th scope="row"><router-link :to="{ name: 'EditContact', params: {id:contact.id} }" class="btn btn-primary btn-sm">Edit</router-link>
+                    <button class="btn btn-danger btn-sm mx-2" @click.prevent="deleteContact(contact.id)">Delete</button></th>
             </tr>
             </tbody>
         </table>
@@ -51,6 +52,18 @@ export default  {
         async deleteContact(id) {
             let url = `http://127.0.0.1:8000/api/delete_contact/${id}`;
             await axios.delete(url).then(response => {
+                if (response.data.code === 200){
+                    alert(response.data.message);
+                    this.getContacts();
+                }
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+
+        async getContact(id) {
+            let url = `http://127.0.0.1:8000/api/edit_contact/${id}`;
+            await axios.put(url).then(response => {
                 if (response.data.code === 200){
                     alert(response.data.message);
                     this.getContacts();
